@@ -60,6 +60,44 @@ app.post('/signup', async (req: Request, res: Response) => {
 })
 /*Cadastrando um novo usuário - /SignUp*/
 
+/*Logando na conta - /Login*/
+app.post("/login", async (req: Request, res: Response) => {
+    try {
+
+         if (!req.body.email || !req.body.password) {
+            throw new Error("Parâmetros inválidos.");
+        }
+
+        const userData = {
+            email: req.body.email,
+            password: req.body.password
+        };
+
+        const userDatabase = new UserDatabase();
+        const user = await userDatabase.getUserByEmail(userData.email);
+
+        const hashManager = new HashManager;
+        const passwordIsCorrect = await hashManager.compare(userData.password, user.password)
+
+        if (!passwordIsCorrect) {
+            throw new Error("Senha inválida");
+        }
+
+        const authenticator = new Authenticator();
+        const token = authenticator.generateToken({
+            id: user.id
+        });
+
+        res.status(200).send({ access_token: token });
+
+    } catch (err) {
+        res.status(400).send({
+            message: err.message,
+        });
+    }
+});
+/*Logando na conta - /Login*/
+
 /*Iniciando servidor*/
 const server = app.listen(process.env.PORT || 3003, () => {
     if (server) {

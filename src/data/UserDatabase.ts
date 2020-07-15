@@ -22,5 +22,17 @@ export class UserDatabase extends BaseDataBase {
       .insert({ id, name, email, password })
       .into(UserDatabase.TABLE_NAME)
   }
+
+  public async getUserByEmail(email: string): Promise<any> {
+    const result = await this.connection
+      .select("*")
+      .from(UserDatabase.TABLE_NAME)
+      .where({ email });
+
+    BaseDataBase.destroyConnection();
+
+    return result[0];
+  }
+
 };
 
