@@ -13,14 +13,14 @@ export class UserDatabase extends BaseDataBase {
       database: process.env.DB_DATABASE_NAME,
     },
   })
-/*Comunicação com o Banco de dados*/
+  /*Comunicação com o Banco de dados*/
 
-private static TABLE_NAME = 'User'
+  private static TABLE_NAME = 'User'
 
- public async createUser(id: string, name: string, email: string, password: string): Promise<void>{
+  public async createUser(id: string, name: string, email: string, password: string): Promise<void> {
     await this.getConnection()
-    .insert({id, name, email, password})
-    .into(UserDatabase.TABLE_NAME)
-}
+      .insert({ id, name, email, password })
+      .into(UserDatabase.TABLE_NAME)
+  }
 };
 
