@@ -1,7 +1,8 @@
-import knex from "knex";
-import { BaseDataBase } from "./BaseDataBase";
+import knex from "knex"
+import { BaseDataBase } from '../data/BaseDatabase'
 
 export class UserDatabase extends BaseDataBase {
+  /*Comunicação com o Banco de dados*/
   private connection = knex({
     client: "mysql",
     connection: {
@@ -12,4 +13,14 @@ export class UserDatabase extends BaseDataBase {
       database: process.env.DB_DATABASE_NAME,
     },
   })
+/*Comunicação com o Banco de dados*/
+
+private static TABLE_NAME = 'User'
+
+ public async createUser(id: string, name: string, email: string, password: string): Promise<void>{
+    await this.getConnection()
+    .insert({id, name, email, password})
+    .into(UserDatabase.TABLE_NAME)
+}
 };
+
