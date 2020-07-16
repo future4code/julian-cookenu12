@@ -21,12 +21,19 @@ export class Authenticator {
     const payload = jwt.verify(token, process.env.JWT_KEY as string) as any;
     const result = {
       id: payload.id,
-    };
+      role: payload.role
+    }
     return result;
   }
 }
 
 interface AuthenticationData {
   id: string
+  role: USER_ROLES;
+}
+
+export enum USER_ROLES {
+  NORMAL = "NORMAL",
+  ADMIN = "ADMIN"
 }
 
