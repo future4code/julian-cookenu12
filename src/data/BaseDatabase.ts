@@ -2,7 +2,7 @@ import knex from "knex";
 import Knex from "knex";
 
 export class BaseDataBase {
-    private static connection: Knex | null = null
+    private static connection: Knex | null = null;
 
     protected getConnection(): Knex {
         if (!BaseDataBase.connection) {

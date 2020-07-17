@@ -5,7 +5,6 @@ import { IdGenerator } from "./services/IdGenerator";
 import { UserDatabase } from "./data/UserDatabase";
 import { Authenticator } from "./services/Authenticator";
 import HashManager from "./services/HashManager";
-import moment from 'moment';
 import { RecipeDatabase } from "./data/RecipeDatabase";
 
 /*Atribuindo elementos necessários*/
@@ -209,28 +208,30 @@ app.post('/recipe', async (req: Request, res: Response) => {
         )
         const idGenerator = new IdGenerator();
         const id = idGenerator.generate();
-        // const today = new Date();
-        const recipeDB = new RecipeDatabase();
-        
+        const recipeDb = new RecipeDatabase();
+
         const recipeData = {
             id: req.body.id,
-            title: req.body.title, 
+            title: req.body.title,
             description: req.body.description,
             creationDate: req.body.creationDate,
             authorId: req.body.authorId
         }
 
-        await recipeDB.createRecipe(
-            id, 
-            recipeData.title, 
-            recipeData.description, 
-            recipeData.creationDate, 
+        await recipeDb.createRecipe(
+            id,
+            recipeData.title,
+            recipeData.description,
+            recipeData.creationDate,
             recipeData.authorId
-            )
-    }
+        )
 
-    catch (error) {
-        res.status(400).send({message: error.message})
+        res.status(200).send({
+            message: "Receita criada com sucesso!"
+        })
+
+    } catch (error) {
+        res.status(400).send({ message: error.message })
     }
 })
 /*Criação de nova receita - (/recipe)*/

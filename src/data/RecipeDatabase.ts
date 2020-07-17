@@ -3,7 +3,6 @@ import { BaseDataBase } from '../data/BaseDatabase';
 import moment from 'moment';
 
 export class RecipeDatabase extends BaseDataBase {
-    /*Comunicação com o Banco de dados*/
     private connection = knex({
       client: "mysql",
       connection: {
@@ -14,7 +13,6 @@ export class RecipeDatabase extends BaseDataBase {
         database: process.env.DB_DATABASE_NAME,
       },
     })
-    /*Comunicação com o Banco de dados*/
 
     private static TABLE_NAME = 'Recipe'
 
@@ -22,14 +20,12 @@ export class RecipeDatabase extends BaseDataBase {
         id: string, 
         title: string, 
         description: string,
-        creation_date:moment.Moment,
+        creation_date: string = moment().format("YYYY-MM-DD"),
         author_id: string
-        ): Promise<void>{
+    ): Promise<void>{
         await this.getConnection()
             .insert({id, title, description, creation_date, author_id})
             .into(RecipeDatabase.TABLE_NAME);
-
-    BaseDataBase.destroyConnection(); 
 }
 
 public async getUserById(id: string): Promise<any> {
@@ -37,9 +33,9 @@ public async getUserById(id: string): Promise<any> {
       .select("*")
       .from(RecipeDatabase.TABLE_NAME)
       .where({ id });
-  
-    BaseDataBase.destroyConnection();
-  
+
+      BaseDataBase.destroyConnection();
+
     return result[0];
   }
 }
