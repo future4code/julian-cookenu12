@@ -146,23 +146,19 @@ app.get("/user/profile", async (req: Request, res: Response) => {
         /*Comunicação com o Banco de dados*/
         const userDb = new UserDatabase();
         const user = await userDb.getUserById(authenticationData.id);
-        /*Comunicação com o Banco de dados*/
 
         /*Validação do tipo de perfil*/
         if (user.role !== "NORMAL") {
             res.status(401).send({ message: "Acesso negado." })
             throw new Error("Apenas um usuário normal pode acessar essa funcionalidade.")
         }
-        /*Validação do tipo de perfil*/
 
-        /*Resposta no Postman*/
         res.status(200).send({
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role
         });
-        /*Resposta no Postman*/
 
     } catch (error) {
         res.status(400).send({ message: error.message });
@@ -176,12 +172,10 @@ app.get('/user/:id', async (req: Request, res: Response) => {
         /*Instanciando dependências para validações de autenticação*/
         const authenticator = new Authenticator();
         const authenticationData = await authenticator.getData(req.headers.authorization as string);
-        /*Instanciando dependências para validações de autenticação*/
 
         /*Instanciando dependências para conexão com o Banco de Dados*/
         const userDB = new UserDatabase();
         const user = await userDB.getUserById(req.params.id)
-        /*Instanciando dependências para conexão com o Banco de Dados*/
 
         /*Mandando a requisição, via endpoint, pro Banco de dados*/
         res.status(200).send({
@@ -189,12 +183,10 @@ app.get('/user/:id', async (req: Request, res: Response) => {
             name: user.name,
             email: user.email
         });
-        /*Mandando a requisição, via endpoint, pro Banco de dados*/
     }
     catch (error) {
         /*Encaminhando mensagens de erro que indicam falha no processo*/
         res.status(400).send({ message: error.message })
-        /*Encaminhando mensagens de erro que indicam falha no processo*/
     }
 });
 /*Visualização de outro perfil - (/user/:id)*/
@@ -203,11 +195,15 @@ app.get('/user/:id', async (req: Request, res: Response) => {
 app.post('/recipe', async (req: Request, res: Response) => {
     try {
         const authenticator = new Authenticator();
+
         const tokenData = authenticator.getData(
             req.headers.authorization as string
         )
+
         const idGenerator = new IdGenerator();
+        
         const id = idGenerator.generate();
+
         const recipeDb = new RecipeDatabase();
 
         const recipeData = {
@@ -215,7 +211,7 @@ app.post('/recipe', async (req: Request, res: Response) => {
             title: req.body.title,
             description: req.body.description,
             creationDate: req.body.creationDate,
-            authorId: req.body.authorId
+            authorId: tokenData.id
         }
 
         await recipeDb.createRecipe(
