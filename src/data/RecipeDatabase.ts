@@ -38,4 +38,15 @@ public async getUserById(id: string): Promise<any> {
 
     return result[0];
   }
+
+  public async getRecipeById(id:string): Promise<any>{
+    const result = await this.connection()
+      .select('*')
+      .from(RecipeDatabase.TABLE_NAME)
+      .where({id})
+
+      BaseDataBase.destroyConnection()
+
+      return result[0]
+  }
 }

@@ -6,6 +6,7 @@ import { UserDatabase } from "./data/UserDatabase";
 import { Authenticator } from "./services/Authenticator";
 import HashManager from "./services/HashManager";
 import { RecipeDatabase } from "./data/RecipeDatabase";
+import { ContentDatabase } from "./data/ContentDatabase";
 
 /*Atribuindo elementos necessários*/
 dotenv.config();
@@ -232,6 +233,58 @@ app.post('/recipe', async (req: Request, res: Response) => {
 })
 /*Criação de nova receita - (/recipe)*/
 
+/*Pegando receita - (/recipe/:id)*/
+app.get('/recipe/:id', async (req: Request, res: Response) => {
+    try {
+        /*Instanciando ferramentas de autenticação*/
+        const authenticator = new Authenticator();
+        const authenticationData = authenticator.getData(req.headers.authorization as string);
+        /*Instanciando ferramentas de autenticação*/
+
+        /*Instanciando dependências para conexão com o Banco de Dados*/
+        const recipeDB = new RecipeDatabase();
+        const recipe = await recipeDB.getRecipeById(req.params.id)
+       
+        /*Mandando a requisição, via endpoint, pro Banco de dados*/
+        res.status(200).send({
+            id: recipe.id,
+	        title: recipe.title,
+	        description: recipe.description,
+	        createdAt: recipe.creation_date
+        });
+    }
+    catch (error) {
+        /*Encaminhando mensagens de erro que indicam falha no processo*/
+        res.status(400).send({ message: error.message })
+    }
+});
+/*Pegando receita - (/recipe/:id)*/
+
+/*Seguindo usuário - (/user/follow)*/
+app.post('/user/follow', async (req: Request, res: Response) => {
+    try {
+            /*Ferramentas de autenticação*/
+            const authenticator = new Authenticator()
+            authenticator.getData(req.headers.authorization as string);
+            /*Ferramentas de autenticação*/
+        
+            const followData = {
+                authorId: req.body.authorId,
+                followingId: req.body.followingId
+            }
+            /*Conexão com o banco de dados*/
+            const followDB = new ContentDatabase();
+            await followDB.followUser(followData.authorId, followData.followingId)
+            /*Conexão com o banco de dados*/
+            /*Resposta de sucesso do endpoint*/
+            res.status(200).send({message: 'Followed successfully'})
+            /*Resposta de sucesso do endpoint*/
+
+    } catch(error){
+        res.status(400).send({message: error.message})
+    }
+})
+/*Seguindo usuário - (/user/follow)*/
 /*Deletar conta - endpoint /user:id*/
 app.delete("/user/:id", async (req: Request, res: Response) => {
     try {
