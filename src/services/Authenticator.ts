@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken"
 
+/* */
 export class Authenticator {
-
-  private static EXPIRES_IN = "1h";
+  private static getExpiresIn(): number {
+    return Number(process.env.ACCESS_TOKEN_EXPIRES_IN);
+  }
 
   public generateToken(input: AuthenticationData): string {
     const token = jwt.sign(
@@ -11,12 +13,13 @@ export class Authenticator {
       },
       process.env.JWT_KEY as string,
       {
-        expiresIn: Authenticator.EXPIRES_IN,
+        expiresIn: Authenticator.getExpiresIn()
       }
     );
     return token;
   }
 
+  /* Método que verifica o token e extrai dele o id */
   public getData(token: string): AuthenticationData {
     const payload = jwt.verify(token, process.env.JWT_KEY as string) as any;
     const result = {
