@@ -1,11 +1,11 @@
 import knex from "knex";
 import Knex from "knex";
 
-export class BaseDataBase {
+/* Classe que realiza a conexão com o banco, utilizando knex */
+export abstract class BaseDataBase {
     private static connection: Knex | null = null;
-
     protected getConnection(): Knex {
-        if (!BaseDataBase.connection) {
+        if (BaseDataBase.connection === null) {
             BaseDataBase.connection = knex({
                 client: "mysql",
                 connection: {
@@ -20,6 +20,7 @@ export class BaseDataBase {
         return BaseDataBase.connection;
     }
 
+    /* Método estático de destruir a conexão, para desativar os endpoints uma vez que eles já foram executados p/ não gerar problemas dependendo do tamanho da aplicação */
     public static async destroyConnection(): Promise<void> {
         if (BaseDataBase.connection) {
             await BaseDataBase.connection.destroy();
